@@ -12,7 +12,7 @@ users = db.users
 
 
 app = Flask(__name__)
-CORS(app, resources={"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 Prenoms = pd.read_csv("./data/Prenoms.csv", encoding="latin1", delimiter=",")
 PrenomsGars = Prenoms[(Prenoms.genre == "m") | (Prenoms.genre == "m,f")]
