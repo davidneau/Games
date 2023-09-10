@@ -1,18 +1,28 @@
 <template>
-  <HelloWorld />
+  <h1>Bienvenue</h1>
 </template>
 
 <script>
 import { defineComponent } from 'vue';
 
-// Components
-import HelloWorld from '../components/HelloWorld.vue';
-
 export default defineComponent({
   name: 'HomeView',
-
-  components: {
-    HelloWorld,
-  },
+  async mounted() {
+      let loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn == "false"){
+        window.location.href = "./#/login"
+      }
+      console.log("aaaa")
+    }
 });
 </script>
+
+<style scoped>
+
+h1{
+  color: pink;
+  text-align: center;
+  font-size: 100px;
+}
+
+</style>

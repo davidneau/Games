@@ -1,5 +1,6 @@
 <template>
-  <v-app>
+  <v-app class="main">
+    <AppNavigation></AppNavigation>
     <v-main>
       <router-view/>
     </v-main>
@@ -7,12 +8,24 @@
 </template>
 
 <script>
+import AppNavigation from '@/components/AppNavigation'
 
 export default {
   name: 'App',
+  components: {
+    AppNavigation,
+  },
 
   data: () => ({
     //
   }),
 }
 </script>
+
+<style scoped>
+
+.main{
+  background-color: black;
+}
+
+</style>
