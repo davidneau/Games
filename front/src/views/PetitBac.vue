@@ -55,7 +55,7 @@
         answer["FruitsLegumes"] = document.getElementById("FruitsLegumes" + nol).children[0].value
         answer["Celebrities"] = document.getElementById("Celebrities" + nol).children[0].value
         console.log(answer)
-        axios.post("http://127.0.0.1:5000/sendAnswer", answer)
+        axios.post("http://85.31.238.211:5000/sendAnswer", answer)
         .then((data) => {
           console.log(data)
           Object.keys(data.data).forEach(element => {

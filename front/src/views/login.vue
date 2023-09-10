@@ -48,7 +48,7 @@ export default {
                 "login": document.getElementById("identifiant").value,
                 "password": document.getElementById("password").value,
             }
-            axios.post('http://127.0.0.1:5000/login', user)
+            axios.post('http://85.31.238.211:5000/login', user)
             .then((data) => {
                 localStorage.setItem("loggedIn", "true")
                 if(data.data == "True"){
@@ -64,7 +64,7 @@ export default {
                 "login": document.getElementById("identifiantfb").value,
                 "password": document.getElementById("passwordfb").value,
             }
-            axios.post('http://127.0.0.1:5000/login', user)
+            axios.post('http://85.31.238.211:5000/login', user)
             .then((data) => {
                 localStorage.setItem("loggedIn", "true")
                 if(data.data == "True"){

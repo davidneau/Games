@@ -30,7 +30,7 @@ export default {
                 "password": document.getElementById("password").value,
                 "email": document.getElementById("email").value,
             }
-            axios.post('http://127.0.0.1:5000/registration', user)
+            axios.post('http://85.31.238.211:5000/registration', user)
             .then((data) => {
                 console.log(data)
                 window.location.href = "./#/login"

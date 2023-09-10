@@ -45,7 +45,7 @@
             table.appendChild(line)
         },
         keepintouch(){
-            axios.get("http://127.0.0.1:5000/getAllOnlinePlayer")
+            axios.get("http://85.31.238.211:5000/getAllOnlinePlayer")
             .then((responseData) =>{
                 console.log(responseData.data)
                 responseData.data.forEach((element) =>{
