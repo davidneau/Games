@@ -1,5 +1,5 @@
 <template>
-  <h1>Bienvenue</h1>
+  <h1>BienvenueModif</h1>
 </template>
 
 <script>
