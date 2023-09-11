@@ -45,6 +45,7 @@ categories = {
 @app.route('/registration', methods=['POST'])
 def registration():
     user = request.get_json()
+    user["online"] = True
     users.insert_one(user)
     return 'OK'
 
