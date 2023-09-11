@@ -48,10 +48,12 @@ export default {
                 "login": document.getElementById("identifiant").value,
                 "password": document.getElementById("password").value,
             }
-            axios.post('http://85.31.238.211:5000/login', user)
+            axios.post(localStorage.getItem("urlBack") + "/login", user)
             .then((data) => {
+                console.log(data)
                 localStorage.setItem("loggedIn", "true")
-                if(data.data == "True"){
+                if(data.data !== "False"){
+                    localStorage.setItem("player", JSON.stringify(user))
                     window.location.href = "/"
                 }
                 else {
@@ -64,7 +66,7 @@ export default {
                 "login": document.getElementById("identifiantfb").value,
                 "password": document.getElementById("passwordfb").value,
             }
-            axios.post('http://85.31.238.211:5000/login', user)
+            axios.post(localStorage.getItem("urlBack") + "/login", user)
             .then((data) => {
                 localStorage.setItem("loggedIn", "true")
                 if(data.data == "True"){
@@ -77,9 +79,16 @@ export default {
         }
     },
     mounted(){
-        console.log(localStorage.getItem("loggedIn"))
         localStorage.setItem("loggedIn", false)
-    }
+        let hasReloaded = localStorage.getItem('hasReloaded')
+        console.log(hasReloaded)
+        if (hasReloaded == "false"){
+            localStorage.setItem('hasReloaded', true)
+            location.reload()
+        }
+        else {
+            localStorage.setItem('hasReloaded', false)}
+        }
 }
 </script>
 

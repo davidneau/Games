@@ -27,6 +27,7 @@
     methods: {
         addline(element){
             let table = document.getElementById("mainTable")
+            console.log(table)
             let line = document.createElement("tr")
             line.classList.add("line")
 
@@ -45,7 +46,7 @@
             table.appendChild(line)
         },
         keepintouch(){
-            axios.get("http://85.31.238.211:5000/getAllOnlinePlayer")
+            axios.get(localStorage.getItem("urlBack") + "/getAllOnlinePlayer")
             .then((responseData) =>{
                 console.log(responseData.data)
                 responseData.data.forEach((element) =>{
@@ -56,10 +57,13 @@
     },
     async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
+      console.log(loggedIn)
       if (loggedIn == "false"){
         window.location.href = "./#/login"
       }
-      this.keepintouch()
+      else {
+        this.keepintouch()
+      }
     }
   }
   </script>

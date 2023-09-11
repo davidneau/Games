@@ -12,7 +12,16 @@ export default defineComponent({
       if (loggedIn == "false"){
         window.location.href = "./#/login"
       }
-      console.log("aaaa")
+
+      if (window.location.href.includes("127.0.0.1")){
+        localStorage.setItem("urlBack", "http://127.0.0.1:5000")
+      }
+      if (window.location.href.includes("gaminggalaxiemania.com")){
+        localStorage.setItem("urlBack", "http://85.31.238.211:5000")
+      }
+
+      console.log("urlBack : " + localStorage.getItem("urlBack"))
+      
     }
 });
 </script>

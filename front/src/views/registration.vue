@@ -30,7 +30,7 @@ export default {
                 "password": document.getElementById("password").value,
                 "email": document.getElementById("email").value,
             }
-            axios.post('http://85.31.238.211:5000/registration', user)
+            axios.post(localStorage.getItem("urlBack") + "/registration", user)
             .then((data) => {
                 console.log(data)
                 window.location.href = "./#/login"

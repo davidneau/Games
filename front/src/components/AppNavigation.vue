@@ -8,7 +8,7 @@
               <v-list-item link to='/AcceuilPetitBac'>
                   Petit Bac
               </v-list-item>
-              <v-list-item link to='/login'>
+              <v-list-item @click = "logOff()">
                   Déconnexion
               </v-list-item>
           </v-list>
@@ -21,6 +21,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'AppNavigation',
     data(){
@@ -29,8 +31,17 @@ export default {
             loggedIn: true,
         }
     },
+    methods: {
+        logOff() {
+            console.log(JSON.parse(localStorage.getItem("player")))
+            axios.post(localStorage.getItem("urlBack") + "/users/logOff", {login: JSON.parse(localStorage.getItem("player"))["login"]})
+            .then((response) => {
+                console.log(response.data)
+                window.location.href = "./#/login"
+            })
+        }
+    },
     mounted(){
-        console.log(localStorage.getItem("loggedIn"))
         if (window.location.href.includes("login")){this.loggedIn = false}
     }
 }

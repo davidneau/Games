@@ -23,14 +23,14 @@ Metiers = pd.read_csv("./data/Métiers.csv", encoding="latin1", delimiter=",")
 Pays = pd.read_csv("./data/Pays.csv", encoding="latin1", delimiter=",")
 Villes = pd.read_csv("./data/Villes.csv", encoding="latin1", delimiter=",")
 
-print(Prenoms.head()["name"])
+""" print(Prenoms.head()["name"])
 print(PrenomsGars.head()["name"])
 print(PrenomsFilles.head()["name"])
 print(Celebrities.head()["name"])
 print(FruitsLegumes.head()["name"])
 print(Metiers.head()["name"])
 print(Pays.head()["name"])
-print(Villes.head()["name"])
+print(Villes.head()["name"]) """
 
 categories = {
     "Garcon": PrenomsGars,
@@ -52,8 +52,21 @@ def registration():
 @app.route('/login', methods=['POST'])
 def login():
     user = request.get_json()
+    print(user)
     if users.find_one(user):
-        return "True"
+        users.update_one(user, {"$set": {"online": True}})
+        return user
+    else:
+        return "False"
+
+
+@app.route('/users/logOff', methods=['POST'])
+def logOff():
+    print(request.get_json())
+    user = request.get_json()
+    if users.find_one(user):
+        users.update_one(user, {"$set": {"online": False}})
+        return "OK"
     else:
         return "False"
 
@@ -82,5 +95,6 @@ def getAllOnlinePlayer():
     return json.loads(json_util.dumps(onlinePlayer))
 
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0")
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="0.0.0.0", port=5000)
