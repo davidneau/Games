@@ -100,6 +100,7 @@
             console.log(event.data)
           }
           this.evtSource.onmerror = function(event) {
+            console.log(event.data)
             let newMessages = event.data.split(",")
             console.log(newMessages)
             if (newMessages.length() !== this.messages.length()){
