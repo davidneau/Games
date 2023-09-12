@@ -1,13 +1,26 @@
-<template style="height: 100%">
+<template style="height: 100%; max-height: 100%">
     <div class="main">
-      <div class="divtab">
-        <table border=0 cellspacing=0 class="mainTable" id="mainTable">
-          <tr>
-            <th style="width: 10%"></th>
-            <th>Joueurs</th>
-            <th style="width: 10%">Prêt</th>
-          </tr>
-        </table>
+      <div class="chatAndTab">
+        <div class="divChat">
+          <div class="chat">
+            <div class="messageContainer">
+              <p>{{ name }}</p>
+              <div class="message">Message Test</div>
+            </div>
+          </div>
+          <div class="inputChat">
+            <textarea rows="5" cols="1" id="windowChat" @keyup.enter="sendMessage" ref="inputMessage"></textarea>
+          </div>
+        </div>
+        <div class="divtab">
+          <table border=0 cellspacing=0 class="mainTable" id="mainTable">
+            <tr>
+              <th style="width: 10%"></th>
+              <th>Joueurs</th>
+              <th style="width: 10%">Prêt</th>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
 </template>
@@ -19,15 +32,14 @@
     name: "AcceuilPetitBac",
     data() {
       return {
-        numberOfLetter: 0,
-        currentLetter: "",
-        lettersRemained: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        evtSource: "",
+        name: JSON.parse(localStorage.getItem("player"))["login"],
+        messages: []
       }
     },
     methods: {
         addline(element){
             let table = document.getElementById("mainTable")
-            console.log(table)
             let line = document.createElement("tr")
             line.classList.add("line")
 
@@ -48,22 +60,66 @@
         keepintouch(){
             axios.get(localStorage.getItem("urlBack") + "/getAllOnlinePlayer")
             .then((responseData) =>{
-                console.log(responseData.data)
                 responseData.data.forEach((element) =>{
                     this.addline(element)
                 })
             })
+        },
+        createMessage(newMessage){
+          let chat = document.getElementsByClassName("chat")[0]
+
+          let divMessage = document.createElement("div")
+          divMessage.classList.add("messageContainer")
+
+          let newDivMessage = document.createElement("div")
+          newDivMessage.classList.add("message")
+          newDivMessage.innerText = newMessage
+          let name = document.createElement("p")
+          name.innerText = this.name
+
+          divMessage.appendChild(name)
+          divMessage.appendChild(newDivMessage)
+
+          chat.appendChild(divMessage)
+        },
+        sendMessage(){
+          this.createMessage(this.$refs.inputMessage.value)
+
+          axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.$refs.inputMessage.value})
+          .then((response) => {
+            console.log(response)
+            this.$refs.inputMessage.value = ""
+          })
+        },
+        stream(){
+          this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
+          this.evtSource.onopen = function() {
+            console.log("event source is open")
+          }
+          this.evtSource.onmessage = function(event) {
+            console.log(event.data)
+          }
+          this.evtSource.onmerror = function(event) {
+            let newMessages = event.data.split(",")
+            console.log(newMessages)
+            if (newMessages.length() !== this.messages.length()){
+              let noNewMessage = newMessages.length() - this.messages.length()
+              newMessages.slice(-noNewMessage).forEach((element) => {
+                this.addline(element)
+              })
+            }
+          }
         }
     },
     async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
-      console.log(loggedIn)
       if (loggedIn == "false"){
         window.location.href = "./#/login"
       }
       else {
         this.keepintouch()
       }
+      this.stream()
     }
   }
   </script>
@@ -75,16 +131,13 @@ body, html{
     margin: 0;
 }
 
-body div{
-    height: 100%;
-}
-
 .main{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-around;
     height: 100%;
+    max-height: 100%;
     background-color: black;
     color: pink
 }
@@ -94,48 +147,111 @@ body div{
 }
 </style>
 
-<style>
+<style scopped>
 
 .divtab{
-    width: 50%;
-    height: 70%;
-    max-height: 90%;
-  }
-  
-  .mainTable{
-    width: 100%;
-  }
-  
-  .line{
-    height: 60px;
-  }
+  width: 50%;
+  height: 100%;
+  max-height: 100%;
+  border: 1px solid pink;
+}
 
-  .stop{
-    height: 80%;
-    width: 80%;
-    color: pink;
-    border: 1px solid pink;
-    border-radius: 10px;
-  }
-  
-  .mainTable tr:first-child{
-    height: 80px;
-  }
-  
-  .mainTable th{
-    border: 1px solid pink;
-    font-size: 24px;
-  }
-  
-  .mainTable td{
-    text-align: center;
-    border: 1px solid pink;
-  }
-  
-  .mainTable td input{
-    border: 1px solid pink;
-    color: black;
-    background-color: pink;
-    width: 80%;
-  }
-  </style>
+.divChat{
+  width: 50%;
+  height: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatAndTab{
+  width: 70%;
+  height: 90%;
+  max-height: 90%;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid pink;
+}
+
+.chat{
+  width: 100%;
+  max-height: 600px;
+  flex: 2;
+  overflow-y: auto;
+  border: 1px solid pink;
+}
+
+.inputChat{
+  width: 100%;
+  border: 1px solid pink;
+  position: relative;
+  flex: 1;
+}
+
+.messageContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.message{
+  background-color: purple;
+  color: black;
+  max-width: 60%;
+  border-radius: 20px 0px 20px 20px;
+  padding: 10px;
+}
+
+
+#windowChat{
+  background-color: pink;
+  color: black;
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.mainTable{
+  width: 100%;
+}
+
+.line{
+  height: 60px;
+}
+
+.stop{
+  height: 80%;
+  width: 80%;
+  color: pink;
+  border: 1px solid pink;
+  border-radius: 10px;
+}
+
+.mainTable tr:first-child{
+  height: 80px;
+}
+
+.mainTable th{
+  border: 1px solid pink;
+  font-size: 24px;
+}
+
+.mainTable td{
+  text-align: center;
+  border: 1px solid pink;
+}
+
+.mainTable td input{
+  border: 1px solid pink;
+  color: black;
+  background-color: pink;
+  width: 80%;
+}
+</style>

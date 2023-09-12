@@ -1,5 +1,5 @@
 <template>
-  <h1>BienvenueModif</h1>
+  <h1>Bienvenue</h1>
 </template>
 
 <script>
@@ -12,6 +12,8 @@ export default defineComponent({
       if (loggedIn == "false"){
         window.location.href = "./#/login"
       }
+
+      localStorage.setItem("hasReloaded", "false")
 
       if (window.location.href.includes("127.0.0.1")){
         localStorage.setItem("urlBack", "http://127.0.0.1:5000")

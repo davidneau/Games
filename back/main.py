@@ -1,15 +1,17 @@
-from flask import Flask, request
+from flask import Flask, request, Response
 from flask_cors import CORS
 import pandas as pd
 from pymongo import MongoClient
 import json
 from bson import json_util
+import time
 
 client = MongoClient()
 client = MongoClient("mongodb+srv://admin:Dragon-49@cluster0.thgjuyb.mongodb.net/?retryWrites=true&w=majority")
 db = client.Games
 users = db.users
 
+messages = []
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -84,6 +86,21 @@ def sendAnswer():
             checkAnswer[cat] = (answer[cat] in categories["Pays"]["name"].values) or (answer[cat] in categories["Villes"]["name"].values)    
     print(checkAnswer)
     return checkAnswer
+
+@app.route('/sendMessage', methods = ['POST'])
+def sendMessage():
+    message = request.get_json()["message"]
+    messages.append(message[:-1])
+    return "Message has been registered"
+
+@app.route('/streamingData')
+def generate_data():
+    def generate():
+        while True:
+            time.sleep(1)
+            print(messages)
+            yield str(messages)[1:-2] + "\n\n"
+    return app.response_class(generate(), mimetype='text/event-stream')
 
 @app.route('/getAllOnlinePlayer', methods=['GET'])
 def getAllOnlinePlayer():
