@@ -34,7 +34,7 @@
       return {
         evtSource: "",
         name: JSON.parse(localStorage.getItem("player"))["login"],
-        messages: []
+        messageHistory: []
       }
     },
     methods: {
@@ -92,24 +92,24 @@
           })
         },
         stream(){
+          console.log(this.messageHistory)
           this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
           this.evtSource.onopen = function() {
             console.log("event source is open")
           }
           this.evtSource.onmessage = function(event) {
             console.log(event.data)
-          }
-          this.evtSource.onmerror = function(event) {
-            console.log(event.data)
             let newMessages = event.data.split(",")
             console.log(newMessages)
-            if (newMessages.length() !== this.messages.length()){
-              let noNewMessage = newMessages.length() - this.messages.length()
+            console.log(typeof this.messageHistory)
+            if (newMessages.length !== this.messageHistory.length){
+              let noNewMessage = newMessages.length - this.messageHistory.length
               newMessages.slice(-noNewMessage).forEach((element) => {
-                this.addline(element)
+                this.createMessage(element)
+                this.messageHistory.push(element)
               })
             }
-          }
+          }.bind(this)
         }
     },
     async mounted() {
