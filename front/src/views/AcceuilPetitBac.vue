@@ -116,7 +116,7 @@
             if (newMessages.length !== this.messageHistory.length){
               let noNewMessage = newMessages.length - this.messageHistory.length
               newMessages.slice(-noNewMessage).forEach((element) => {
-                this.createMessage(element.substring(1, element.length - 1), "left")
+                this.createMessage(element.substring(2, element.length - 1), "left")
                 this.messageHistory.push(element.substring(1, element.length - 1))
               })
             }
