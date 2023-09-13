@@ -65,7 +65,7 @@
                 })
             })
         },
-        createMessage(newMessage, side){
+        createMessage(newMessage, side, author){
           let chat = document.getElementsByClassName("chat")[0]
 
           let divMessage = document.createElement("div")
@@ -85,7 +85,7 @@
           }
           newDivMessage.innerText = newMessage
           let name = document.createElement("p")
-          name.innerText = this.name
+          name.innerText = author
 
           divMessage.appendChild(name)
           divMessage.appendChild(newDivMessage)
@@ -93,10 +93,10 @@
           chat.appendChild(divMessage)
         },
         sendMessage(){
-          this.createMessage(this.$refs.inputMessage.value, "right")
+          this.createMessage(this.$refs.inputMessage.value, "right", this.name)
           this.messageHistory.push(this.$refs.inputMessage.value)
 
-          axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.$refs.inputMessage.value})
+          axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.name + "," + this.$refs.inputMessage.value})
           .then((response) => {
             console.log(response)
             this.$refs.inputMessage.value = ""
@@ -110,15 +110,18 @@
           }
           this.evtSource.onmessage = function(event) {
             console.log(event.data)
-            let newMessages = event.data.split(",")
-            console.log(newMessages)
-            console.log(typeof this.messageHistory)
-            if (newMessages.length !== this.messageHistory.length){
-              let noNewMessage = newMessages.length - this.messageHistory.length
-              newMessages.slice(-noNewMessage).forEach((element) => {
-                this.createMessage(element.substring(2, element.length - 1), "left")
-                this.messageHistory.push(element.substring(1, element.length - 1))
-              })
+            if (event.data !== ""){
+              let newMessages = event.data.split(",")
+              console.log(newMessages)
+              console.log(typeof this.messageHistory)
+              if (newMessages.length !== this.messageHistory.length){
+                let noNewMessage = newMessages.length - this.messageHistory.length
+                newMessages.slice(-noNewMessage).forEach((element) => {
+                  element = element.substring(2, element.length - 1)
+                  this.createMessage(element.split(";")[1].substring(2, element.length - 1), "left", element.split(";")[0].substring(2, element.length - 1))
+                  this.messageHistory.push(element.split(";")[1].substring(2, element.length - 1))
+                })
+              }
             }
           }.bind(this)
         }

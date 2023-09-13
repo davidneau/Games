@@ -89,8 +89,8 @@ def sendAnswer():
 
 @app.route('/sendMessage', methods = ['POST'])
 def sendMessage():
-    message = request.get_json()["message"]
-    messages.append(message[:-1])
+    messageSplitted = request.get_json()["message"][:-1].split(",")
+    messages.append("(" + messageSplitted[0] + ";" + messageSplitted[1] + ")")
     return "Message has been registered"
 
 @app.route('/streamingData')
