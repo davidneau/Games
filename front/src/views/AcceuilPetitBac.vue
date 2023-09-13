@@ -117,7 +117,7 @@
               let noNewMessage = newMessages.length - this.messageHistory.length
               newMessages.slice(-noNewMessage).forEach((element) => {
                 this.createMessage(element, "left")
-                this.messageHistory.push(element)
+                this.messageHistory.push(element.slice(1,-1))
               })
             }
           }.bind(this)
@@ -215,7 +215,7 @@ body, html{
   align-items: flex-start;
   margin-top: 10px;
   margin-bottom: 10px;
-  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .message{
