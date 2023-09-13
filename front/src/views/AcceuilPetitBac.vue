@@ -3,10 +3,6 @@
       <div class="chatAndTab">
         <div class="divChat">
           <div class="chat">
-            <div class="messageContainer">
-              <p>{{ name }}</p>
-              <div class="message">Message Test</div>
-            </div>
           </div>
           <div class="inputChat">
             <textarea rows="5" cols="1" id="windowChat" @keyup.enter="sendMessage" ref="inputMessage"></textarea>
@@ -113,12 +109,17 @@
             if (event.data !== ""){
               let newMessages = event.data.split(",")
               console.log(newMessages)
-              console.log(typeof this.messageHistory)
               if (newMessages.length !== this.messageHistory.length){
                 let noNewMessage = newMessages.length - this.messageHistory.length
                 newMessages.slice(-noNewMessage).forEach((element) => {
-                  element = element.substring(2)
-                  this.createMessage(element.split(";")[1], "left", element.split(";")[0])
+                  element = element.substring(1, element.length - 1)
+                  console.log(element)
+                  if (this.name == element.split(";")[0]){
+                    this.createMessage(element.split(";")[1], "right", element.split(";")[0])
+                  }
+                  else {
+                    this.createMessage(element.split(";")[1], "left", element.split(";")[0])
+                  }
                   this.messageHistory.push(element.split(";")[1])
                 })
               }
