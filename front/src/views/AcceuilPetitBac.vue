@@ -69,8 +69,13 @@
           let chat = document.getElementsByClassName("chat")[0]
 
           let divMessage = document.createElement("div")
-          divMessage.classList.add("messageContainer")
-
+          
+          if(side == "left"){
+            divMessage.classList.add("messageContainer")
+          } else {
+            divMessage.classList.add("otherMessageContainer")
+          }
+          
           let newDivMessage = document.createElement("div")
           if (side == "right"){
             newDivMessage.classList.add("message")
@@ -89,6 +94,7 @@
         },
         sendMessage(){
           this.createMessage(this.$refs.inputMessage.value, "right")
+          this.messageHistory.push(this.$refs.inputMessage.value)
 
           axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.$refs.inputMessage.value})
           .then((response) => {
@@ -198,6 +204,15 @@ body, html{
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.otherMessageContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
