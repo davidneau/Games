@@ -65,14 +65,19 @@
                 })
             })
         },
-        createMessage(newMessage){
+        createMessage(newMessage, side){
           let chat = document.getElementsByClassName("chat")[0]
 
           let divMessage = document.createElement("div")
           divMessage.classList.add("messageContainer")
 
           let newDivMessage = document.createElement("div")
-          newDivMessage.classList.add("message")
+          if (side == "right"){
+            newDivMessage.classList.add("message")
+          }
+          else {
+            newDivMessage.classList.add("otherMessage")
+          }
           newDivMessage.innerText = newMessage
           let name = document.createElement("p")
           name.innerText = this.name
@@ -83,7 +88,7 @@
           chat.appendChild(divMessage)
         },
         sendMessage(){
-          this.createMessage(this.$refs.inputMessage.value)
+          this.createMessage(this.$refs.inputMessage.value, "right")
 
           axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.$refs.inputMessage.value})
           .then((response) => {
@@ -105,7 +110,7 @@
             if (newMessages.length !== this.messageHistory.length){
               let noNewMessage = newMessages.length - this.messageHistory.length
               newMessages.slice(-noNewMessage).forEach((element) => {
-                this.createMessage(element)
+                this.createMessage(element, "left")
                 this.messageHistory.push(element)
               })
             }
@@ -206,6 +211,13 @@ body, html{
   padding: 10px;
 }
 
+.otherMessage{
+  background-color: palevioletred;
+  color: black;
+  max-width: 60%;
+  border-radius: 0px 20px 20px 20px;
+  padding: 10px;
+}
 
 #windowChat{
   background-color: pink;
