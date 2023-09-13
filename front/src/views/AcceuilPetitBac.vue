@@ -71,9 +71,9 @@
           let divMessage = document.createElement("div")
           
           if(side == "left"){
-            divMessage.classList.add("messageContainer")
-          } else {
             divMessage.classList.add("otherMessageContainer")
+          } else {
+            divMessage.classList.add("messageContainer")
           }
           
           let newDivMessage = document.createElement("div")
