@@ -99,7 +99,7 @@ def generate_data():
         while True:
             time.sleep(1)
             print(messages)
-            yield "data: "+ str(messages)[1:-1] + "\n\n"
+            yield "data: "+ str(messages)[1:-1].replace("'", "").replace(" ", "") + "\n\n"
     return app.response_class(generate(), mimetype='text/event-stream')
 
 @app.route('/getAllOnlinePlayer', methods=['GET'])
