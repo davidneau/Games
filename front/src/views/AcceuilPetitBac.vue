@@ -30,11 +30,12 @@
       return {
         evtSource: "",
         name: JSON.parse(localStorage.getItem("player"))["login"],
-        messageHistory: []
+        messageHistory: [],
+        players: []
       }
     },
     methods: {
-        addline(element){
+        addline(player){
             let table = document.getElementById("mainTable")
             let line = document.createElement("tr")
             line.classList.add("line")
@@ -44,7 +45,7 @@
             line.appendChild(td1)
 
             let td2 = document.createElement("td")
-            td2.innerText = element["login"]
+            td2.innerText = player
             line.appendChild(td2)
 
             let td3 = document.createElement("td")
@@ -99,7 +100,6 @@
           })
         },
         stream(){
-          console.log(this.messageHistory)
           this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
           this.evtSource.onopen = function() {
             console.log("event source is open")
@@ -114,17 +114,32 @@
                 newMessages.slice(-noNewMessage).forEach((element) => {
                   element = element.substring(1, element.length - 1)
                   console.log(element)
-                  if (this.name == element.split(";")[0]){
-                    this.createMessage(element.split(";")[1], "right", element.split(";")[0])
+                  if(element.split(";")[0] == "message"){
+                    if (this.name == element.split(";")[1]){
+                      this.createMessage(element.split(";")[2], "right", element.split(";")[1])
+                    }
+                    else {
+                      this.createMessage(element.split(";")[2], "left", element.split(";")[1])
+                    }
+                    this.messageHistory.push(element.split(";")[1])
                   }
                   else {
-                    this.createMessage(element.split(";")[1], "left", element.split(";")[0])
+                    let namePlayer = element.split(";")[1]
+                    if (!this.players.includes(namePlayer)){
+                      this.addline(namePlayer)
+                      this.players.push(namePlayer)
+                    }
                   }
-                  this.messageHistory.push(element.split(";")[1])
                 })
               }
             }
           }.bind(this)
+        },
+        sendOnline(){
+          axios.get(localStorage.getItem("urlBack") + "/sendOnline/" + this.name)
+          .then((response) => {
+            console.log(response.data)
+          })
         }
     },
     async mounted() {
@@ -133,9 +148,9 @@
         window.location.href = "./#/login"
       }
       else {
-        this.keepintouch()
+        this.sendOnline()
+        this.stream()
       }
-      this.stream()
     }
   }
   </script>
@@ -228,6 +243,7 @@ body, html{
   max-width: 60%;
   border-radius: 20px 0px 20px 20px;
   padding: 10px;
+  word-wrap: break-word; 
 }
 
 .otherMessage{

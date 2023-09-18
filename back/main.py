@@ -11,7 +11,8 @@ client = MongoClient("mongodb+srv://admin:Dragon-49@cluster0.thgjuyb.mongodb.net
 db = client.Games
 users = db.users
 
-messages = []
+general_data = []
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -61,7 +62,6 @@ def login():
     else:
         return "False"
 
-
 @app.route('/users/logOff', methods=['POST'])
 def logOff():
     print(request.get_json())
@@ -90,16 +90,22 @@ def sendAnswer():
 @app.route('/sendMessage', methods = ['POST'])
 def sendMessage():
     messageSplitted = request.get_json()["message"][:-1].split(",")
-    messages.append("(" + messageSplitted[0] + ";" + messageSplitted[1] + ")")
+    general_data.append("(message;" + messageSplitted[0] + ";" + messageSplitted[1] + ")")
+    return "Message has been registered"
+
+@app.route('/sendOnline/<name>', methods = ['GET'])
+def sendOnline(name):
+    general_data.append("(player;" + name + ")")
     return "Message has been registered"
 
 @app.route('/streamingData')
 def generate_data():
     def generate():
         while True:
-            time.sleep(1)
-            print(messages)
-            yield "data: "+ str(messages)[1:-1].replace("'", "").replace(" ", "") + "\n\n"
+            time.sleep(2)
+            if general_data != []: 
+                print(general_data)
+            yield "data: "+ str(general_data)[1:-1].replace("'", "").replace(" ", "") + "\n\n"
     return app.response_class(generate(), mimetype='text/event-stream')
 
 @app.route('/getAllOnlinePlayer', methods=['GET'])
