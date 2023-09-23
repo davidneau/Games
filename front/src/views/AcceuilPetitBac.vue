@@ -88,6 +88,7 @@
           divMessage.appendChild(newDivMessage)
 
           chat.appendChild(divMessage)
+          chat.scrollTop = chat.scrollHeight;
         },
         sendMessage(){
           this.createMessage(this.$refs.inputMessage.value, "right", this.name)
@@ -99,6 +100,9 @@
             this.$refs.inputMessage.value = ""
           })
         },
+        checkMessage(message) {
+          return message.includes("message")
+        },
         stream(){
           this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
           this.evtSource.onopen = function() {
@@ -109,7 +113,8 @@
             if (event.data !== ""){
               let newMessages = event.data.split(",")
               console.log(newMessages)
-              if (newMessages.length !== this.messageHistory.length){
+              console.log(this.messageHistory)
+              if (newMessages.filter(this.checkMessage).length !== this.messageHistory.length){
                 let noNewMessage = newMessages.length - this.messageHistory.length
                 newMessages.slice(-noNewMessage).forEach((element) => {
                   element = element.substring(1, element.length - 1)
@@ -305,10 +310,16 @@ body, html{
 
 @media only screen and (max-width: 600px) {
   .divChat {
+    /* display: none; */
     position: absolute;
-    width: 95%;
+    width: 96%;
+    left: 2%;
     background-color: black;
     height: calc(95% - 64px);
+  }
+
+  .main {
+    justify-content: none;
   }
 
   .divtab {
@@ -316,7 +327,7 @@ body, html{
   }
 
   .chatAndTab {
-    width: 95%;
+    width: 100%;
   }
 }
 </style>
