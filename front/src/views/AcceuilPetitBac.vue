@@ -302,4 +302,21 @@ body, html{
   background-color: pink;
   width: 80%;
 }
+
+@media only screen and (max-width: 600px) {
+  .divChat {
+    position: absolute;
+    width: 95%;
+    background-color: black;
+    height: calc(95% - 64px);
+  }
+
+  .divtab {
+    width: 100%;
+  }
+
+  .chatAndTab {
+    width: 95%;
+  }
+}
 </style>

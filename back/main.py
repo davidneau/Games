@@ -70,7 +70,7 @@ def logOff():
         users.update_one(user, {"$set": {"online": False}})
         return "OK"
     else:
-        return "False"
+        return "False"  
 
 @app.route('/sendAnswer', methods=['POST'])
 def sendAnswer():
@@ -103,8 +103,9 @@ def generate_data():
     def generate():
         while True:
             time.sleep(2)
+            """ 
             if general_data != []: 
-                print(general_data)
+                print(general_data) """
             yield "data: "+ str(general_data)[1:-1].replace("'", "").replace(" ", "") + "\n\n"
     return app.response_class(generate(), mimetype='text/event-stream')
 

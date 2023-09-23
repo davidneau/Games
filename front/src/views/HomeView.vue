@@ -1,6 +1,5 @@
 <template>
-  <h1 id="debug"></h1>
-  <h1 id="debug2"></h1>
+  <h1 id="debug">Bienvenue</h1>
 </template>
 
 <script>
@@ -10,9 +9,7 @@ export default defineComponent({
   name: 'HomeView',
   async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
-      document.getElementById("debug").innerText = loggedIn
       if (loggedIn != "true"){
-        document.getElementById("debug2").innerText = "loggedin true"
         window.location.href = "./#/login"
       }
 
@@ -37,6 +34,12 @@ h1{
   color: pink;
   text-align: center;
   font-size: 100px;
+}
+
+@media only screen and (max-width: 600px) {
+  h1 {
+    font-size: 40px;
+  }
 }
 
 </style>

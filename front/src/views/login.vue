@@ -216,4 +216,12 @@ input{
     width: 50%;
 }
 
+@media only screen and (max-width: 600px) {
+  .maindiv {
+    width: 90%;
+    left: 5%;
+  }
+}
+
+
 </style>
