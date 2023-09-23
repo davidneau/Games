@@ -1,5 +1,6 @@
 <template>
-  <h1>Bienvenue</h1>
+  <h1 id="debug"></h1>
+  <h1 id="debug2"></h1>
 </template>
 
 <script>
@@ -9,7 +10,9 @@ export default defineComponent({
   name: 'HomeView',
   async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
+      document.getElementById("debug").innerText = loggedIn
       if (loggedIn != "true"){
+        document.getElementById("debug2").innerText = "loggedin true"
         window.location.href = "./#/login"
       }
 
