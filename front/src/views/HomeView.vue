@@ -9,7 +9,7 @@ export default defineComponent({
   name: 'HomeView',
   async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
-      if (loggedIn == "false"){
+      if (loggedIn != "true"){
         window.location.href = "./#/login"
       }
 
