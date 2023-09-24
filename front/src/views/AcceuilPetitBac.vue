@@ -33,7 +33,8 @@ export default {
       evtSource: "",
       name: JSON.parse(localStorage.getItem("player"))["login"],
       messageHistory: [],
-      players: []
+      players: [],
+      noMessage: 0,
     }
   },
   methods: {
@@ -93,12 +94,14 @@ export default {
 
         chat.appendChild(divMessage)
         chat.scrollTop = chat.scrollHeight;
+
+        this.noMessage += 1;
       },
       sendMessage(){
         this.createMessage(this.$refs.inputMessage.value, "right", this.name)
         this.messageHistory.push(this.$refs.inputMessage.value)
 
-        axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.name + "," + this.$refs.inputMessage.value})
+        axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.noMessage + "," + this.name + "," + this.$refs.inputMessage.value})
         .then((response) => {
           console.log(response)
           this.$refs.inputMessage.value = ""
@@ -131,24 +134,24 @@ export default {
           console.log("event source is open")
         }
         this.evtSource.onmessage = function(event) {
-          console.log(event.data)
           if (event.data !== ""){
+            console.log(event.data)
             let newMessages = event.data.split(",")
-            console.log(newMessages)
-            console.log(this.messageHistory)
-            if (newMessages.filter(this.checkMessage).length !== this.messageHistory.length){
-              let noNewMessage = newMessages.length - this.messageHistory.length
-              newMessages.slice(-noNewMessage).forEach((element) => {
-                element = element.substring(1, element.length - 1)
-                console.log(element)
-                if(element.split(";")[0] == "message"){
-                  if (this.name == element.split(";")[1]){
-                    this.createMessage(element.split(";")[2], "right", element.split(";")[1])
+            newMessages.forEach((element) => {
+              element = element.slice(1,-1)
+              let genre = element.split(";")[0]
+              if (genre == "message"){
+                let id = parseInt(element.split(";")[1])
+                let name = element.split(";")[2]
+                let message = element.split(";")[3]
+                if( id > this.noMessage ){
+                  if (this.name == name){
+                    this.createMessage(message, "right", name)
                   }
                   else {
-                    this.createMessage(element.split(";")[2], "left", element.split(";")[1])
+                    this.createMessage(message, "left", name)
                   }
-                  this.messageHistory.push(element.split(";")[1])
+                  this.messageHistory.push(message)
                 }
                 else {
                   let namePlayer = element.split(";")[1]
@@ -157,8 +160,8 @@ export default {
                     this.players.push(namePlayer)
                   }
                 }
-              })
-            }
+              }
+            })
           }
         }.bind(this)
       },

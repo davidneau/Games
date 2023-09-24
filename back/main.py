@@ -90,22 +90,22 @@ def sendAnswer():
 @app.route('/sendMessage', methods = ['POST'])
 def sendMessage():
     messageSplitted = request.get_json()["message"][:-1].split(",")
-    general_data.append("(message;" + messageSplitted[0] + ";" + messageSplitted[1] + ")")
+    general_data.append("(message;" + messageSplitted[0] + ";" + messageSplitted[1] + ";" + messageSplitted[2] + ")")
     return "Message has been registered"
 
 @app.route('/sendOnline/<name>', methods = ['GET'])
 def sendOnline(name):
-    general_data.append("(player;" + name + ")")
-    return "Message has been registered"
+    if "(player;" + name + ")" not in general_data:
+        general_data.append("(player;" + name + ")")
+    return "Player " + name + " is online"
 
 @app.route('/streamingData')
 def generate_data():
     def generate():
         while True:
             time.sleep(2)
-            """ 
             if general_data != []: 
-                print(general_data) """
+                print(general_data)
             yield "data: "+ str(general_data)[1:-1].replace("'", "").replace(" ", "") + "\n\n"
     return app.response_class(generate(), mimetype='text/event-stream')
 
