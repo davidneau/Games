@@ -6,6 +6,7 @@
           </div>
           <div class="inputChat">
             <textarea rows="5" cols="1" id="windowChat" @keyup.enter="sendMessage" ref="inputMessage"></textarea>
+            <button id="Send" @click="sendMessage">Envoyer</button>
           </div>
         </div>
         <div class="divtab">
@@ -18,147 +19,168 @@
           </table>
         </div>
       </div>
+      <button class="triggerChat" @click="openChat">Chat</button>
     </div>
 </template>
   
-  <script>
-  import axios from "axios"
+<script>
+import axios from "axios"
 
-  export default {
-    name: "AcceuilPetitBac",
-    data() {
-      return {
-        evtSource: "",
-        name: JSON.parse(localStorage.getItem("player"))["login"],
-        messageHistory: [],
-        players: []
-      }
-    },
-    methods: {
-        addline(player){
-            let table = document.getElementById("mainTable")
-            let line = document.createElement("tr")
-            line.classList.add("line")
+export default {
+  name: "AcceuilPetitBac",
+  data() {
+    return {
+      evtSource: "",
+      name: JSON.parse(localStorage.getItem("player"))["login"],
+      messageHistory: [],
+      players: []
+    }
+  },
+  methods: {
+      addline(player){
+          let table = document.getElementById("mainTable")
+          let line = document.createElement("tr")
+          line.classList.add("line")
 
-            let td1 = document.createElement("td")
-            td1.innerText = "X"
-            line.appendChild(td1)
+          let td1 = document.createElement("td")
+          td1.innerText = "X"
+          line.appendChild(td1)
 
-            let td2 = document.createElement("td")
-            td2.innerText = player
-            line.appendChild(td2)
+          let td2 = document.createElement("td")
+          td2.innerText = player
+          line.appendChild(td2)
 
-            let td3 = document.createElement("td")
-            td3.innerText = "X"
-            line.appendChild(td3)
+          let td3 = document.createElement("td")
+          td3.innerText = "X"
+          line.appendChild(td3)
 
-            table.appendChild(line)
-        },
-        keepintouch(){
-            axios.get(localStorage.getItem("urlBack") + "/getAllOnlinePlayer")
-            .then((responseData) =>{
-                responseData.data.forEach((element) =>{
-                    this.addline(element)
-                })
-            })
-        },
-        createMessage(newMessage, side, author){
-          let chat = document.getElementsByClassName("chat")[0]
-
-          let divMessage = document.createElement("div")
-          
-          if(side == "left"){
-            divMessage.classList.add("otherMessageContainer")
-          } else {
-            divMessage.classList.add("messageContainer")
-          }
-          
-          let newDivMessage = document.createElement("div")
-          if (side == "right"){
-            newDivMessage.classList.add("message")
-          }
-          else {
-            newDivMessage.classList.add("otherMessage")
-          }
-          newDivMessage.innerText = newMessage
-          let name = document.createElement("p")
-          name.innerText = author
-
-          divMessage.appendChild(name)
-          divMessage.appendChild(newDivMessage)
-
-          chat.appendChild(divMessage)
-          chat.scrollTop = chat.scrollHeight;
-        },
-        sendMessage(){
-          this.createMessage(this.$refs.inputMessage.value, "right", this.name)
-          this.messageHistory.push(this.$refs.inputMessage.value)
-
-          axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.name + "," + this.$refs.inputMessage.value})
-          .then((response) => {
-            console.log(response)
-            this.$refs.inputMessage.value = ""
+          table.appendChild(line)
+      },
+      keepintouch(){
+          axios.get(localStorage.getItem("urlBack") + "/getAllOnlinePlayer")
+          .then((responseData) =>{
+              responseData.data.forEach((element) =>{
+                  this.addline(element)
+              })
           })
-        },
-        checkMessage(message) {
-          return message.includes("message")
-        },
-        stream(){
-          this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
-          this.evtSource.onopen = function() {
-            console.log("event source is open")
+      },
+      createMessage(newMessage, side, author){
+        let chat = document.getElementsByClassName("chat")[0]
+
+        let divMessage = document.createElement("div")
+        
+        if(side == "left"){
+          divMessage.classList.add("otherMessageContainer")
+        } else {
+          divMessage.classList.add("messageContainer")
+        }
+
+        console.log(divMessage)
+        
+        let newDivMessage = document.createElement("div")
+        if (side == "right"){
+          newDivMessage.classList.add("messageDiv")
+        }
+        else {
+          newDivMessage.classList.add("otherMessage")
+        }
+        newDivMessage.innerText = newMessage
+        let name = document.createElement("p")
+        name.innerText = author
+
+        divMessage.appendChild(name)
+        divMessage.appendChild(newDivMessage)
+
+        chat.appendChild(divMessage)
+        chat.scrollTop = chat.scrollHeight;
+      },
+      sendMessage(){
+        this.createMessage(this.$refs.inputMessage.value, "right", this.name)
+        this.messageHistory.push(this.$refs.inputMessage.value)
+
+        axios.post(localStorage.getItem("urlBack") + "/sendMessage", {"message": this.name + "," + this.$refs.inputMessage.value})
+        .then((response) => {
+          console.log(response)
+          this.$refs.inputMessage.value = ""
+        })
+      },
+      openChat(){
+        let chat = document.getElementsByClassName("divChat")[0]
+        chat.style.display = "flex"
+        if (chat.children.length == 2) {
+          const barre = document.createElement("div")
+          barre.classList.add("barre")
+
+          const cross = document.createElement("button")
+          cross.classList.add("cross")
+          cross.innerText = "Fermer"
+          cross.onclick = function(){
+            chat.style.display = "none"
           }
-          this.evtSource.onmessage = function(event) {
-            console.log(event.data)
-            if (event.data !== ""){
-              let newMessages = event.data.split(",")
-              console.log(newMessages)
-              console.log(this.messageHistory)
-              if (newMessages.filter(this.checkMessage).length !== this.messageHistory.length){
-                let noNewMessage = newMessages.length - this.messageHistory.length
-                newMessages.slice(-noNewMessage).forEach((element) => {
-                  element = element.substring(1, element.length - 1)
-                  console.log(element)
-                  if(element.split(";")[0] == "message"){
-                    if (this.name == element.split(";")[1]){
-                      this.createMessage(element.split(";")[2], "right", element.split(";")[1])
-                    }
-                    else {
-                      this.createMessage(element.split(";")[2], "left", element.split(";")[1])
-                    }
-                    this.messageHistory.push(element.split(";")[1])
+
+          barre.appendChild(cross)
+          chat.insertBefore(barre, chat.firstChild)
+        }
+      },
+      checkMessage(message) {
+        return message.includes("message")
+      },
+      stream(){
+        this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
+        this.evtSource.onopen = function() {
+          console.log("event source is open")
+        }
+        this.evtSource.onmessage = function(event) {
+          console.log(event.data)
+          if (event.data !== ""){
+            let newMessages = event.data.split(",")
+            console.log(newMessages)
+            console.log(this.messageHistory)
+            if (newMessages.filter(this.checkMessage).length !== this.messageHistory.length){
+              let noNewMessage = newMessages.length - this.messageHistory.length
+              newMessages.slice(-noNewMessage).forEach((element) => {
+                element = element.substring(1, element.length - 1)
+                console.log(element)
+                if(element.split(";")[0] == "message"){
+                  if (this.name == element.split(";")[1]){
+                    this.createMessage(element.split(";")[2], "right", element.split(";")[1])
                   }
                   else {
-                    let namePlayer = element.split(";")[1]
-                    if (!this.players.includes(namePlayer)){
-                      this.addline(namePlayer)
-                      this.players.push(namePlayer)
-                    }
+                    this.createMessage(element.split(";")[2], "left", element.split(";")[1])
                   }
-                })
-              }
+                  this.messageHistory.push(element.split(";")[1])
+                }
+                else {
+                  let namePlayer = element.split(";")[1]
+                  if (!this.players.includes(namePlayer)){
+                    this.addline(namePlayer)
+                    this.players.push(namePlayer)
+                  }
+                }
+              })
             }
-          }.bind(this)
-        },
-        sendOnline(){
-          axios.get(localStorage.getItem("urlBack") + "/sendOnline/" + this.name)
-          .then((response) => {
-            console.log(response.data)
-          })
-        }
-    },
-    async mounted() {
-      let loggedIn = localStorage.getItem("loggedIn");
-      if (loggedIn == "false"){
-        window.location.href = "./#/login"
+          }
+        }.bind(this)
+      },
+      sendOnline(){
+        axios.get(localStorage.getItem("urlBack") + "/sendOnline/" + this.name)
+        .then((response) => {
+          console.log(response.data)
+        })
       }
-      else {
-        this.sendOnline()
-        this.stream()
-      }
+  },
+  async mounted() {
+    let loggedIn = localStorage.getItem("loggedIn");
+    if (loggedIn == "false"){
+      window.location.href = "./#/login"
+    }
+    else {
+      this.sendOnline()
+      this.stream()
     }
   }
-  </script>
+}
+</script>
   
 <style scoped>
 
@@ -181,9 +203,6 @@ body, html{
 .line{
     height: 50px;
 }
-</style>
-
-<style scopped>
 
 .divtab{
   width: 50%;
@@ -222,53 +241,28 @@ body, html{
   border: 1px solid pink;
   position: relative;
   flex: 1;
-}
-
-.messageContainer{
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-right: 10px;
-}
-
-.otherMessageContainer{
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 10px;
-}
-
-.message{
-  background-color: purple;
-  color: black;
-  max-width: 60%;
-  border-radius: 20px 0px 20px 20px;
-  padding: 10px;
-  word-wrap: break-word; 
-}
-
-.otherMessage{
-  background-color: palevioletred;
-  color: black;
-  max-width: 60%;
-  border-radius: 0px 20px 20px 20px;
-  padding: 10px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 }
 
 #windowChat{
   background-color: pink;
   color: black;
-  width: 80%;
-  height: 80%;
-  position: absolute;
-  top: 10%;
-  left: 10%;
+  width: 70%;
+  height: 70%;
   border-radius: 20px;
   padding: 10px;
+}
+
+button{
+  background-color: pink;
+  color: black;
+  border-radius: 20px;
+  height: 50px;
+  width: 20%;
+  font-weight: bold;
 }
 
 .mainTable{
@@ -310,16 +304,20 @@ body, html{
 
 @media only screen and (max-width: 600px) {
   .divChat {
-    /* display: none; */
+    display: none;
     position: absolute;
-    width: 96%;
-    left: 2%;
+    width: 100%;
+    left: 0;
     background-color: black;
-    height: calc(95% - 64px);
+    height: calc(100% - 80px);
   }
 
   .main {
-    justify-content: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
   }
 
   .divtab {
@@ -330,4 +328,55 @@ body, html{
     width: 100%;
   }
 }
+</style>
+
+<style>
+
+.messageContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.otherMessageContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 10px;
+}
+
+.messageDiv{
+  background-color: purple;
+  color: black;
+  max-width: 60%;
+  border-radius: 20px 0px 20px 20px;
+  padding: 10px;
+  word-wrap: break-word; 
+}
+
+.otherMessage{
+  background-color: palevioletred;
+  color: black;
+  max-width: 60%;
+  border-radius: 0px 20px 20px 20px;
+  padding: 10px;
+}
+
+
+.barre{
+  border: 1px solid pink;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.cross{
+  color: pink
+}
+
 </style>
