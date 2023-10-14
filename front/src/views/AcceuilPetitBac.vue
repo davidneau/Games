@@ -61,7 +61,8 @@ export default {
           axios.get(localStorage.getItem("urlBack") + "/getAllOnlinePlayer")
           .then((responseData) =>{
               responseData.data.forEach((element) =>{
-                  this.addline(element)
+                console.log(element)
+                this.addline(element)
               })
           })
       },
@@ -135,7 +136,7 @@ export default {
         }
         this.evtSource.onmessage = function(event) {
           if (event.data !== ""){
-            console.log(event.data)
+            /* console.log(event.data) */
             let newMessages = event.data.split(",")
             newMessages.forEach((element) => {
               element = element.slice(1,-1)
@@ -153,12 +154,12 @@ export default {
                   }
                   this.messageHistory.push(message)
                 }
-                else {
-                  let namePlayer = element.split(";")[1]
-                  if (!this.players.includes(namePlayer)){
-                    this.addline(namePlayer)
-                    this.players.push(namePlayer)
-                  }
+              }
+              else {
+                let namePlayer = element.split(";")[1]
+                if (!this.players.includes(namePlayer)){
+                  this.addline(namePlayer)
+                  this.players.push(namePlayer)
                 }
               }
             })
@@ -229,6 +230,10 @@ body, html{
   display: flex;
   flex-direction: row;
   border: 1px solid pink;
+}
+
+.triggerChat{
+  display: none
 }
 
 .chat{
@@ -313,6 +318,10 @@ button{
     left: 0;
     background-color: black;
     height: calc(100% - 80px);
+  }
+
+  .triggerChat{
+    display: block
   }
 
   .main {

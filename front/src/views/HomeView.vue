@@ -9,13 +9,10 @@ export default defineComponent({
   name: 'HomeView',
   async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
-      if (loggedIn != "true"){
-        window.location.href = "./#/login"
-      }
 
       localStorage.setItem("hasReloaded", "false")
 
-      if (window.location.href.includes("127.0.0.1")){
+      if (window.location.href.includes("127.0.0.1") || window.location.href.includes("localhost")){
         localStorage.setItem("urlBack", "http://127.0.0.1:5000")
       }
       if (window.location.href.includes("gaminggalaxiemania.com")){
@@ -23,7 +20,9 @@ export default defineComponent({
       }
 
       console.log("urlBack : " + localStorage.getItem("urlBack"))
-      
+      if (loggedIn != "true"){
+        window.location.href = "./#/login"
+      }
     }
 });
 </script>
