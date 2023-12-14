@@ -3,10 +3,19 @@
 </template>
 
 <script>
+import axios from "axios"
 import { defineComponent } from 'vue';
 
 export default defineComponent({
   name: 'HomeView',
+  methods: {
+    updateRoom(){
+      axios.get(localStorage.getItem("urlBack") + "/updateRoom/" +  JSON.parse(localStorage.getItem("player"))["login"] + "/home")
+      .then((response) => {
+        console.log(response.data)
+      })
+    },
+  },
   async mounted() {
       let loggedIn = localStorage.getItem("loggedIn");
 
@@ -23,6 +32,8 @@ export default defineComponent({
       if (loggedIn != "true"){
         window.location.href = "./#/login"
       }
+
+      this.updateRoom()
     }
 });
 </script>

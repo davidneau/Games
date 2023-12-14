@@ -8,6 +8,9 @@
               <v-list-item link to='/AcceuilPetitBac'>
                   Petit Bac
               </v-list-item>
+              <v-list-item link to='/testFBX'>
+                  test
+              </v-list-item>
               <v-list-item @click = "logOff()">
                   Déconnexion
               </v-list-item>
@@ -34,7 +37,8 @@ export default {
     methods: {
         logOff() {
             console.log(JSON.parse(localStorage.getItem("player")))
-            axios.post(localStorage.getItem("urlBack") + "/users/logOff", {login: JSON.parse(localStorage.getItem("player"))["login"]})
+            console.log(this.name)
+            axios.get(localStorage.getItem("urlBack") + "/users/logOff/" + JSON.parse(localStorage.getItem("player"))["login"])
             .then((response) => {
                 console.log(response.data)
                 window.location.href = "./#/login"

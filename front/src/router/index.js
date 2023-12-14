@@ -4,6 +4,8 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/login.vue'
 import RegistrationView from '../views/registration.vue'
 import AcceuilPetitBacView from '../views/AcceuilPetitBac.vue'
+import PlanetD from '../views/planetD.vue'
+import testFBX from '../views/fbxTest.vue'
 
 const routes = [
   {
@@ -30,6 +32,16 @@ const routes = [
     path: '/registration',
     name: 'registration',
     component: RegistrationView
+  },
+  {
+    path: '/testFBX',
+    name: 'testFBX',
+    component: testFBX
+  },
+  {
+    path: '/PlanetD',
+    name: 'PlanetD',
+    component: PlanetD
   }
 ]
 

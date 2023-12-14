@@ -1,5 +1,6 @@
 <template style="height: 100%; max-height: 100%">
     <div class="main">
+      <button class="ReadyDesktop" @click="ready">Ready</button>
       <div class="chatAndTab">
         <div class="divChat">
           <div class="chat">
@@ -19,8 +20,11 @@
           </table>
         </div>
       </div>
-      <button class="triggerChat" @click="openChat">Chat</button>
-    </div>
+      <div class='footer'>
+        <button class="triggerChat" @click="openChat">Chat</button>
+        <button class="Ready" @click="ready">Ready</button>
+      </div>
+  </div>
 </template>
   
 <script>
@@ -33,7 +37,7 @@ export default {
       evtSource: "",
       name: JSON.parse(localStorage.getItem("player"))["login"],
       messageHistory: [],
-      players: [],
+      players: {},
       noMessage: 0,
     }
   },
@@ -129,6 +133,15 @@ export default {
       checkMessage(message) {
         return message.includes("message")
       },
+      ready() {
+        console.log(this.players)
+        this.players[this.name].ready = true
+        let allReady = true
+        Object.keys(this.players).forEach(player => {
+          if (!this.players[player].ready) allReady = false
+        })
+        if (allReady) window.location.href = "./#/petitbac"
+      },
       stream(){
         this.evtSource = new EventSource(localStorage.getItem("urlBack") + "/streamingData");
         this.evtSource.onopen = function() {
@@ -157,21 +170,39 @@ export default {
               }
               else {
                 let namePlayer = element.split(";")[1]
-                if (!this.players.includes(namePlayer)){
+                let alreadyInList = false
+                console.log(this.players)
+                Object.keys(this.players).forEach(player => {
+                  console.log(player)
+                  console.log(namePlayer)
+                  if (player == namePlayer){
+                    alreadyInList = true
+                  }
+                })
+                if (!alreadyInList){
                   this.addline(namePlayer)
-                  this.players.push(namePlayer)
+                  this.players[namePlayer] = {"ready": false}
                 }
               }
             })
           }
         }.bind(this)
       },
-      sendOnline(){
-        axios.get(localStorage.getItem("urlBack") + "/sendOnline/" + this.name)
+      updateRoom(){
+        axios.get(localStorage.getItem("urlBack") + "/updateRoom/" + this.name + "/petitBac")
         .then((response) => {
           console.log(response.data)
         })
-      }
+      },
+      logOff(){
+        console.log(this.name)
+        localStorage.setItem("loggedIn", "false")
+        axios.get(localStorage.getItem("urlBack") + "/users/logOff/" + this.name)
+        .then((response) => {console.log(response)})
+      },
+  },  
+  created(){
+    window.addEventListener("beforeunload", this.logOff);
   },
   async mounted() {
     let loggedIn = localStorage.getItem("loggedIn");
@@ -179,7 +210,7 @@ export default {
       window.location.href = "./#/login"
     }
     else {
-      this.sendOnline()
+      this.updateRoom()
       this.stream()
     }
   }
@@ -232,7 +263,7 @@ body, html{
   border: 1px solid pink;
 }
 
-.triggerChat{
+.footer{
   display: none
 }
 
@@ -310,6 +341,11 @@ button{
   width: 80%;
 }
 
+.ReadyDesktop{
+  background: green;
+  width: 150px;
+}
+
 @media only screen and (max-width: 600px) {
   .divChat {
     display: none;
@@ -318,10 +354,6 @@ button{
     left: 0;
     background-color: black;
     height: calc(100% - 80px);
-  }
-
-  .triggerChat{
-    display: block
   }
 
   .main {
@@ -338,6 +370,23 @@ button{
 
   .chatAndTab {
     width: 100%;
+  }
+
+  .footer{
+    display: flex;
+    width: 100%;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-around;
+  }
+
+  
+  .Ready{
+    background: green;
+  }
+
+  .ReadyDesktop{
+    display:none;
   }
 }
 </style>
