@@ -55,7 +55,7 @@ export default {
         },
         mouseMove(event){
             if(this.selected) {
-                this.angle += (event.touches[0]["clientX"] - this.referX) / 100
+                this.angle -= (event.touches[0]["clientX"] - this.referX) / 100
                 console.log(this.angle)
                 this.draw()
                 this.referX = event.touches[0]["clientX"]
