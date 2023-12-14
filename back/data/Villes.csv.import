@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bgrjfhe670plk"
+
+[deps]
+
+files=["res://Web/Jeux/back/data/Villes.nameASCI.translation", "res://Web/Jeux/back/data/Villes.lat.translation", "res://Web/Jeux/back/data/Villes.lng.translation", "res://Web/Jeux/back/data/Villes.country.translation", "res://Web/Jeux/back/data/Villes.iso2.translation", "res://Web/Jeux/back/data/Villes.iso3.translation", "res://Web/Jeux/back/data/Villes.admin.translation", "res://Web/Jeux/back/data/Villes.capital.translation", "res://Web/Jeux/back/data/Villes.population.translation", "res://Web/Jeux/back/data/Villes.id.translation"]
+
+source_file="res://Web/Jeux/back/data/Villes.csv"
+dest_files=["res://Web/Jeux/back/data/Villes.nameASCI.translation", "res://Web/Jeux/back/data/Villes.lat.translation", "res://Web/Jeux/back/data/Villes.lng.translation", "res://Web/Jeux/back/data/Villes.country.translation", "res://Web/Jeux/back/data/Villes.iso2.translation", "res://Web/Jeux/back/data/Villes.iso3.translation", "res://Web/Jeux/back/data/Villes.admin.translation", "res://Web/Jeux/back/data/Villes.capital.translation", "res://Web/Jeux/back/data/Villes.population.translation", "res://Web/Jeux/back/data/Villes.id.translation"]
+
+[params]
+
+compress=true
+delimiter=0

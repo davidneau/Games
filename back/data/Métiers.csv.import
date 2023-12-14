@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://0wykxyjg84lt"
+
+[deps]
+
+files=["res://Web/Jeux/back/data/Métiers. .translation", "res://Web/Jeux/back/data/Métiers. .translation", "res://Web/Jeux/back/data/Métiers.name.translation", "res://Web/Jeux/back/data/Métiers.Code OGR.translation"]
+
+source_file="res://Web/Jeux/back/data/Métiers.csv"
+dest_files=["res://Web/Jeux/back/data/Métiers. .translation", "res://Web/Jeux/back/data/Métiers. .translation", "res://Web/Jeux/back/data/Métiers.name.translation", "res://Web/Jeux/back/data/Métiers.Code OGR.translation"]
+
+[params]
+
+compress=true
+delimiter=0

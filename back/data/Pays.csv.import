@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bms08qufm41xs"
+
+[deps]
+
+files=["res://Web/Jeux/back/data/Pays.name.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.ARTICLE.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.IND.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.SOUVERAIN.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.CODE.translation", "res://Web/Jeux/back/data/Pays..translation", "res://Web/Jeux/back/data/Pays..translation"]
+
+source_file="res://Web/Jeux/back/data/Pays.csv"
+dest_files=["res://Web/Jeux/back/data/Pays.name.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.ARTICLE.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.IND.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.ISO.translation", "res://Web/Jeux/back/data/Pays.SOUVERAIN.translation", "res://Web/Jeux/back/data/Pays.NOM.translation", "res://Web/Jeux/back/data/Pays.CODE.translation", "res://Web/Jeux/back/data/Pays..translation", "res://Web/Jeux/back/data/Pays..translation"]
+
+[params]
+
+compress=true
+delimiter=0

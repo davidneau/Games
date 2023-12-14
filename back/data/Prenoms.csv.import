@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bxkuoaccfm41i"
+
+[deps]
+
+files=["res://Web/Jeux/back/data/Prenoms.genre.translation", "res://Web/Jeux/back/data/Prenoms.03.translation", "res://Web/Jeux/back/data/Prenoms.04.translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation"]
+
+source_file="res://Web/Jeux/back/data/Prenoms.csv"
+dest_files=["res://Web/Jeux/back/data/Prenoms.genre.translation", "res://Web/Jeux/back/data/Prenoms.03.translation", "res://Web/Jeux/back/data/Prenoms.04.translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation", "res://Web/Jeux/back/data/Prenoms..translation"]
+
+[params]
+
+compress=true
+delimiter=0
