@@ -32,7 +32,7 @@ export default {
                 "11": -5,
                 "12": -4
             },
-            element: ["comet", "asteroid", "nuageDeGaz", "planeteNaine", "vide", "planeteD"]
+            element: ["comet", "asteroid", "planeteNaine", "nuageDeGaz", "vide", "planeteD"]
         }
     },
     methods: {
@@ -47,19 +47,83 @@ export default {
             let canvas = this.$refs.monCanvas
             let ctx = canvas.getContext("2d")
             if(element == "comet"){
-                console.log("comet")
+                this.line(centerX-4, centerY-4, centerX-6, centerY+2, ctx)
+                this.line(centerX-6, centerY+2, centerX-5, centerY+2, ctx)
+                this.line(centerX-5, centerY+2, centerX-8, centerY+8, ctx)
+                this.line(centerX-8, centerY+8, centerX-2, centerY+5, ctx)
+                this.line(centerX-2, centerY+5, centerX-2, centerY+6, ctx)
+                this.line(centerX-2, centerY+6, centerX+4, centerY+4, ctx)
+                ctx.arc(centerX, centerY, 3, 0, Math.PI*2, false)
+                ctx.arc(centerX, centerY, 6, Math.PI/4, -3 * Math.PI/4, true)
             }
             if(element == "asteroid"){
                 console.log("asteroid")
+                this.line(centerX-9, centerY, centerX-6, centerY-3, ctx)
+                this.line(centerX-6, centerY-3, centerX-3, centerY-9, ctx)
+                this.line(centerX-3, centerY-9, centerX+3, centerY-9, ctx)
+                this.line(centerX+3, centerY-9, centerX+9, centerY-3, ctx)
+                this.line(centerX+9, centerY-3, centerX+9, centerY, ctx)
+                this.line(centerX+9, centerY, centerX, centerY+9, ctx)
+                this.line(centerX, centerY+9, centerX-3, centerY+9, ctx)
+                this.line(centerX-3, centerY+9, centerX-9, centerY+3, ctx)
+                this.line(centerX-9, centerY+3, centerX-9, centerY, ctx)
+                
+                this.line(centerX+1, centerY-3, centerX+3, centerY-5, ctx)
+                this.line(centerX+3, centerY-5, centerX+1, centerY-7, ctx)
+                this.line(centerX+1, centerY-7, centerX-1, centerY-5, ctx)
+                this.line(centerX-1, centerY-5, centerX+1, centerY-3, ctx)
+                
+                this.line(centerX+3, centerY+1, centerX+5, centerY+1, ctx)
+                this.line(centerX+5, centerY+1, centerX+5, centerY-1, ctx)
+                this.line(centerX+5, centerY-1, centerX+3, centerY-1, ctx)
+                this.line(centerX+3, centerY-1, centerX+3, centerY+1, ctx)
+                
+                this.line(centerX-2, centerY+2, centerX, centerY+4, ctx)
+                this.line(centerX, centerY+4, centerX-2, centerY+6, ctx)
+                this.line(centerX-2, centerY+6, centerX-4, centerY+4, ctx)
+                this.line(centerX-4, centerY+4, centerX-2, centerY+2, ctx)
+                
+                this.line(centerX-8, centerY-5, centerX-10, centerY-5, ctx)
+                this.line(centerX-10, centerY-5, centerX-10, centerY-7, ctx)
+                this.line(centerX-10, centerY-7, centerX-8, centerY-7, ctx)
+                this.line(centerX-8, centerY-7, centerX-8, centerY-5, ctx)
             }
             if(element == "nuageDeGaz"){
-                console.log("nuageDeGaz")
+                ctx.beginPath();
+                ctx.arc(centerX-8, centerY+2, 5, -Math.PI/2, Math.PI /4, true)
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX-4, centerY-3, 4, -Math.PI/4, -Math.PI, true)
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX+2, centerY-3, 4, -Math.PI/4, -Math.PI * 3/4, true)
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX+8, centerY-2, 5, -3*Math.PI/4, Math.PI/2, false)
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX+4, centerY+3, 4, 0, Math.PI*3/4, false)
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(centerX-2, centerY+3, 4, Math.PI/4, 3*Math.PI/4, false)
+                ctx.stroke();
             }
             if(element == "planeteNaine"){
                 console.log(ctx)
-                this.line(centerX + Math.cos(Math.PI * 3/4) * 10, centerY + Math.sin(Math.PI * 3/4) * 10, centerX + Math.cos(Math.PI * 3/4) * 10 + 8, centerY + Math.sin(Math.PI * 3/4) *10, ctx)
-                this.line(centerX-10, centerY, centerX, centerY, ctx)
-                this.line(centerX + Math.cos(Math.PI * -3/4) * 10, centerY + Math.sin(Math.PI * -3/4) * 10, centerX + Math.cos(Math.PI * -3/4) * 10 + 5, centerY + Math.sin(Math.PI * -3/4) * 10, ctx)
+                ctx.lineWidth = 2;
+                this.line(centerX + Math.cos(Math.PI * 3/4) * 10, 
+                          centerY + Math.sin(Math.PI * 3/4) * 10, 
+                          centerX + Math.cos(Math.PI * 3/4) * 10 + 5, 
+                          centerY + Math.sin(Math.PI * 3/4) * 10, 
+                          ctx)
+                this.line(centerX + Math.cos(Math.PI * -3/4) * 10, 
+                          centerY + Math.sin(Math.PI * -3/4) * 10, 
+                          centerX + Math.cos(Math.PI * -3/4) * 10 + 10, 
+                          centerY + Math.sin(Math.PI * -3/4) * 10, 
+                          ctx)
+                this.line(centerX-7, centerY, centerX + 10, centerY, ctx)
+                ctx.lineWidth = 1;
+
                 ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, true)
             }
             if(element == "vide"){
@@ -89,9 +153,10 @@ export default {
         drawElements(angle) {
             let canvas = this.$refs.monCanvas
             let ctx = canvas.getContext("2d")
-            for (let i=0; i<6; i++){
+            for (let i=2; i<8; i++){
+                let radius = this.radius*i/8
                 ctx.beginPath();
-                this.drawElement(this.centerX + Math.cos(angle) * (this.radius*i/6), this.centerY + Math.sin(angle) * (this.radius*i/6), this.element[i]);
+                this.drawElement(this.centerX + Math.cos(angle) * (radius), this.centerY + Math.sin(angle) * radius, this.element[i-2]);
                 ctx.stroke();
             }
         },
@@ -114,7 +179,7 @@ export default {
                 ctx2.fillText(i+1, 0, 0);
                 ctx2.rotate(-(angleTextSelf))
                 ctx2.translate(-((this.centerX + Math.cos(angleText) * (this.radius + 70))), -(this.centerY + Math.sin(angleText) * (this.radius + 70)))
-                this.drawElements(angleText)
+                this.drawElements(angleTextSelf)
             }
             // Restaure l'état initial du contexte
             ctx2.restore();
