@@ -49,9 +49,9 @@ export default {
                 this.line(this.centerX, this.centerY, this.centerX + Math.cos(angle) * this.radius, this.centerY + Math.sin(angle) * this.radius, ctx2)
                 let angleText = angle + (Math.PI / (this.numberOfSector/2)) / 2
                 ctx2.translate((this.centerX + Math.cos(angleText) * (this.radius + 70)), this.centerY + Math.sin(angleText) * (this.radius + 70))
-                ctx2.rotate(this.referAngleText[i+1] * Math.PI / (this.numberOfSector/2))
+                ctx2.rotate(this.referAngleText[i+1] * ((Math.PI / (this.numberOfSector/2)) - (Math.PI / (this.numberOfSector/2)) / 2))
                 ctx2.fillText(i+1, 0, 0);
-                ctx2.rotate(-(this.referAngleText[i+1] * Math.PI / (this.numberOfSector/2)))
+                ctx2.rotate(-(this.referAngleText[i+1] * ((Math.PI / (this.numberOfSector/2)) - (Math.PI / (this.numberOfSector/2)) / 2)))
                 ctx2.translate(-((this.centerX + Math.cos(angleText) * (this.radius + 70))), -(this.centerY + Math.sin(angleText) * (this.radius + 70)))
             }
             // Restaure l'état initial du contexte
