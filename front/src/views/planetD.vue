@@ -18,20 +18,6 @@ export default {
             numberOfSector: 12,
             angle: 0,
             referX: 0,
-            referAngleText: {
-                "1": -3,
-                "2": -2,
-                "3": -1,
-                "4": 0,
-                "5": 1,
-                "6": 2,
-                "7": 3,
-                "8": 4,
-                "9": 5,
-                "10": 6,
-                "11": -5,
-                "12": -4
-            }
         }
     },
     methods: {
@@ -42,8 +28,7 @@ export default {
             ctx2.save();
             ctx2.clearRect(-window.innerWidth /2, 0, window.innerWidth, window.innerHeight);
             ctx2.rotate(this.angle)
-            this.circle(ctx2, this.radius);
-            this.circle(ctx2, this.radius + 30);
+            this.circle(ctx2);
             for (let i=0; i<this.numberOfSector; i++){
                 let angle = Math.PI * i / (this.numberOfSector/2)
                 this.line(this.centerX, this.centerY, this.centerX + Math.cos(angle) * this.radius, this.centerY + Math.sin(angle) * this.radius, ctx2)
@@ -57,9 +42,9 @@ export default {
             // Restaure l'état initial du contexte
             ctx2.restore();
         },
-        circle(ctx, radius){
+        circle(ctx){
             ctx.beginPath();
-            ctx.arc(this.centerX, this.centerY, radius, 0, 2 * Math.PI, true);
+            ctx.arc(this.centerX, this.centerY, this.radius, 0, 2 * Math.PI, true);
             ctx.stroke();
         },
         line(moveToX, moveToY, lineToX, lineToY, ctx){
@@ -113,7 +98,6 @@ export default {
             this.resizeCanvas(canvas)
 
             ctx.translate(window.innerWidth / 2, 0)
-            ctx.font = "48px serif";
 
             canvas.addEventListener('touchstart', this.mouseDown);
             canvas.addEventListener('touchmove', this.mouseMove);
