@@ -32,6 +32,26 @@ export default {
                 "11": -5,
                 "12": -4
             },
+            referAngleText18: {
+                "1": -5,
+                "2": -4,
+                "3": -3,
+                "4": -2,
+                "5": -1,
+                "6": 0,
+                "7": 1,
+                "8": 2,
+                "9": 3,
+                "10": 4,
+                "11": 5,
+                "12": 6,
+                "13": 7,
+                "14": 8,
+                "15": 9,
+                "16": -8,
+                "17": -7,
+                "18": -6,
+            },
             element: ["comet", "asteroid", "planeteNaine", "nuageDeGaz", "vide", "planeteD"]
         }
     },
@@ -43,21 +63,34 @@ export default {
             ctx.lineTo(lineToX, lineToY);
             ctx.stroke();
         },
-        drawElement(centerX, centerY, element){
+        drawElement(centerX, centerY, element, angle){
             let canvas = this.$refs.monCanvas
             let ctx = canvas.getContext("2d")
+
+            ctx.translate(centerX, centerY)
+
+            angle += Math.PI/2
+            ctx.rotate(angle)
+
+            let oldCenterX = centerX
+            let oldCenterY = centerY
+
+            centerX=0
+            centerY=0
+
             if(element == "comet"){
-                this.line(centerX-4, centerY-4, centerX-6, centerY+2, ctx)
-                this.line(centerX-6, centerY+2, centerX-5, centerY+2, ctx)
-                this.line(centerX-5, centerY+2, centerX-8, centerY+8, ctx)
-                this.line(centerX-8, centerY+8, centerX-2, centerY+5, ctx)
-                this.line(centerX-2, centerY+5, centerX-2, centerY+6, ctx)
-                this.line(centerX-2, centerY+6, centerX+4, centerY+4, ctx)
-                ctx.arc(centerX, centerY, 3, 0, Math.PI*2, false)
-                ctx.arc(centerX, centerY, 6, Math.PI/4, -3 * Math.PI/4, true)
+                this.line(0-4, 0-4, 0-6, 0+2, ctx)
+                this.line(0-6, 0+2, 0-5, 0+2, ctx)
+                this.line(0-5, 0+2, 0-8, 0+8, ctx)
+                this.line(0-8, 0+8, 0-2, 0+5, ctx)
+                this.line(0-2, 0+5, 0-2, 0+6, ctx)
+                this.line(0-2, 0+6, 0+4, 0+4, ctx)
+                ctx.arc(0, 0, 3, 0, Math.PI*2, false)
+                ctx.stroke()
+                ctx.arc(0, 0, 6, Math.PI/4, -3 * Math.PI/4, true)
+                ctx.stroke()
             }
             if(element == "asteroid"){
-                console.log("asteroid")
                 this.line(centerX-9, centerY, centerX-6, centerY-3, ctx)
                 this.line(centerX-6, centerY-3, centerX-3, centerY-9, ctx)
                 this.line(centerX-3, centerY-9, centerX+3, centerY-9, ctx)
@@ -109,7 +142,6 @@ export default {
                 ctx.stroke();
             }
             if(element == "planeteNaine"){
-                console.log(ctx)
                 ctx.lineWidth = 2;
                 this.line(centerX + Math.cos(Math.PI * 3/4) * 10, 
                           centerY + Math.sin(Math.PI * 3/4) * 10, 
@@ -125,6 +157,7 @@ export default {
                 ctx.lineWidth = 1;
 
                 ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, true)
+                ctx.stroke()
             }
             if(element == "vide"){
                 ctx.beginPath();
@@ -148,7 +181,10 @@ export default {
                 }
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, true)
+                ctx.stroke()
             }
+            ctx.rotate(-angle)
+            ctx.translate(-oldCenterX, -oldCenterY)
         },
         drawElements(angle) {
             let canvas = this.$refs.monCanvas
@@ -156,7 +192,7 @@ export default {
             for (let i=2; i<8; i++){
                 let radius = this.radius*i/8
                 ctx.beginPath();
-                this.drawElement(this.centerX + Math.cos(angle) * (radius), this.centerY + Math.sin(angle) * radius, this.element[i-2]);
+                this.drawElement(this.centerX + Math.cos(angle) * (radius), this.centerY + Math.sin(angle) * radius, this.element[i-2], angle);
                 ctx.stroke();
             }
         },
