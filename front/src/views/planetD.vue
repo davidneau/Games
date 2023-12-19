@@ -18,6 +18,11 @@ export default {
             numberOfSector: 12,
             angle: 0,
             referX: 0,
+            refTime: 0,
+            touchX: 0,
+            touchY: 0,
+            initialize: true,
+            repere: {},
             referAngleText: {
                 "1": -3,
                 "2": -2,
@@ -52,10 +57,36 @@ export default {
                 "17": -7,
                 "18": -6,
             },
-            element: ["comet", "asteroid", "planeteNaine", "nuageDeGaz", "vide", "planeteD"]
+            sectorCliked: "",
+            elementClicked: "",
+            statusElements: {},
+            element: ["comet", "asteroid", "planeteNaine", "nuageDeGaz", "vide", "planeteD"],
+            stars: []
         }
     },
     methods: {
+        repereFill(){
+            let j=0
+            let List = [j]
+            let ListN = []
+            for (let i=2; i<8; i++){
+                List.push((j + this.radius*i/8)/2)
+                ListN.push(this.radius*i/8)
+                j=this.radius*i/8
+            }
+            List.splice(1, 1);
+            console.log(List)
+            console.log(ListN)
+            List.push(this.radius)
+            this.repere = List
+/*             let k=0
+            this.element.forEach(element => {
+                this.repere[element] = [List[k], List[k+1]]
+                k = k+1
+            });
+            this.repere["planeteD"][1] = 100000
+            console.log(this.repere)
+ */        },
         line(moveToX, moveToY, lineToX, lineToY, ctx){
             // Start a new Path
             ctx.beginPath();
@@ -63,11 +94,68 @@ export default {
             ctx.lineTo(lineToX, lineToY);
             ctx.stroke();
         },
-        drawElement(centerX, centerY, element, angle){
+        transformation(angle, x, y){
+            let x1 = Math.cos(this.angle) * x - Math.sin(this.angle) * y
+            let y1 = Math.sin(this.angle) * x + Math.cos(this.angle) * y
+            let rayon = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2))
+            let newAngle = (Math.PI*2) - (Math.atan2(y1, x1) + Math.PI*2) % (Math.PI*2)
+            let sector = Math.trunc(newAngle/ ((Math.PI*2)/this.numberOfSector))+1
+            this.sectorCliked = sector
+            let i=0
+            let result = ""
+            this.repere.forEach((element) => {
+                if((element > rayon) && (result == "")){
+                    result = this.element[i-1]
+                    this.elementClicked = this.element[i-1]
+                }
+                i+=1
+            })
+            this.changeStatus()
+            console.log(this.statusElements)
+            return result
+        },
+        changeStatus(){
+            console.log("sector", (this.sectorCliked+3) % this.numberOfSector)
+            if (!this.initialize){
+                if (this.statusElements[(this.sectorCliked+3) % this.numberOfSector][this.elementClicked] == ""){this.statusElements[(this.sectorCliked+3) % this.numberOfSector][this.elementClicked] = "cross"}
+                else if (this.statusElements[(this.sectorCliked+3) % this.numberOfSector][this.elementClicked] == "cross"){this.statusElements[(this.sectorCliked+3) % this.numberOfSector][this.elementClicked] = "circle"}
+                else {this.statusElements[(this.sectorCliked+3) % this.numberOfSector][this.elementClicked] = ""}
+            }
+        },
+        drawStatus(centerX, centerY, status){
+            console.log(status)
+            let canvas = this.$refs.monCanvas
+            let ctx = canvas.getContext("2d")
+            ctx.lineWidth = 4;
+            if (!this.initialize){
+                if (status == "cross"){
+                    console.log("drawred")
+                    ctx.strokeStyle = "red"
+                    for(let i=0; i<4; i++){
+                        ctx.beginPath();
+                        let angle = Math.PI/4 + i * Math.PI/2
+                        ctx.moveTo(centerX, centerY);
+                        ctx.lineTo(centerX + Math.cos(angle) * 15, centerY + Math.sin(angle) * 15);
+                        ctx.moveTo(centerX, centerY);
+                        ctx.stroke();
+                    }
+                }
+                else if (status == "circle"){
+                    ctx.strokeStyle = "green"
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, 20, 0, 2 * Math.PI, true);
+                    ctx.stroke();   
+                }
+            }
+            ctx.lineWidth = 1;
+        },
+        drawElement(centerX, centerY, element, angle, numSector){
             let canvas = this.$refs.monCanvas
             let ctx = canvas.getContext("2d")
 
             ctx.translate(centerX, centerY)
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "white"
 
             angle += Math.PI/2
             ctx.rotate(angle)
@@ -183,16 +271,18 @@ export default {
                 ctx.arc(centerX, centerY, 10, 0, 2 * Math.PI, true)
                 ctx.stroke()
             }
+            this.drawStatus(centerX, centerY, this.statusElements[numSector][element])
             ctx.rotate(-angle)
             ctx.translate(-oldCenterX, -oldCenterY)
         },
-        drawElements(angle) {
+        drawElements(angle, numSector) {
             let canvas = this.$refs.monCanvas
             let ctx = canvas.getContext("2d")
             for (let i=2; i<8; i++){
+                if (this.statusElements[numSector][this.element[i-2]] == undefined){this.statusElements[numSector][this.element[i-2]] = ""}
                 let radius = this.radius*i/8
                 ctx.beginPath();
-                this.drawElement(this.centerX + Math.cos(angle) * (radius), this.centerY + Math.sin(angle) * radius, this.element[i-2], angle);
+                this.drawElement(this.centerX + Math.cos(angle) * (radius), this.centerY + Math.sin(angle) * radius, this.element[i-2], angle, numSector);
                 ctx.stroke();
             }
         },
@@ -203,9 +293,12 @@ export default {
             ctx2.save();
             ctx2.clearRect(-window.innerWidth /2, 0, window.innerWidth, window.innerHeight);
             ctx2.rotate(this.angle)
+            ctx2.fillStyle = "white"
+            this.fillTheSky()
             this.circle(ctx2, this.radius);
             this.circle(ctx2, this.radius + 30);
             for (let i=0; i<this.numberOfSector; i++){
+                if (this.statusElements[i+1] == undefined){this.statusElements[i+1] = {}}
                 let angle = Math.PI * i / (this.numberOfSector/2)
                 this.line(this.centerX, this.centerY, this.centerX + Math.cos(angle) * this.radius, this.centerY + Math.sin(angle) * this.radius, ctx2)
                 let angleText = angle + (Math.PI / (this.numberOfSector/2)) / 2
@@ -215,8 +308,9 @@ export default {
                 ctx2.fillText(i+1, 0, 0);
                 ctx2.rotate(-(angleTextSelf))
                 ctx2.translate(-((this.centerX + Math.cos(angleText) * (this.radius + 70))), -(this.centerY + Math.sin(angleText) * (this.radius + 70)))
-                this.drawElements(angleTextSelf)
+                this.drawElements(angleTextSelf, i+1)
             }
+            console.log(this.statusElements)
             // Restaure l'état initial du contexte
             ctx2.restore();
         },
@@ -227,10 +321,14 @@ export default {
         },
         mouseDown(event){
             console.log("down")
+            this.refTime = Date.now()
             this.selected = true
+            this.touchX = event.touches[0]["clientX"] - window.innerWidth /2
+            this.touchY = - event.touches[0]["clientY"] + 64
             this.referX = event.touches[0]["clientX"]
         },
         mouseMove(event){
+            console.log(this.selected)
             if(this.selected) {
                 this.angle -= (event.touches[0]["clientX"] - this.referX) / 100
                 this.draw()
@@ -240,21 +338,31 @@ export default {
         mouseUp(){
             console.log("up")
             this.selected = false
+            if((Date.now() - this.refTime) < 200) {
+                this.transformation(this.angle, this.touchX, this.touchY)
+                this.draw()
+            }
         },
         resizeCanvas(canvas) {
             console.log(window.innerWidth)
             canvas.width = window.innerWidth;
             canvas.height = window.innerWidth;
         },
-/*         setBackground() {
-            var background = new Image();
-            background.src = require("../assets/galaxy.jpeg");
-
-            // Make sure the image is loaded first otherwise nothing will draw.
-            background.onload = function(){
-                ctx.drawImage(background,0,0, canvas.width, canvas.height);   
+        setStars() {
+            for (let i=0; i<100; i++){
+                this.stars.push([Math.floor((Math.random() * this.radius * 2) - this.radius/2), Math.floor((Math.random() * this.radius * 2) - this.radius/2)])
             }
-        }, */
+        },
+        fillTheSky() {
+            let canvas = this.$refs.monCanvas
+            let ctx = canvas.getContext("2d")
+            this.stars.forEach(element => {
+                ctx.beginPath();
+                ctx.fillStyle="white"
+                ctx.arc(element[0], element[1], 2, 0, 2 * Math.PI);
+                ctx.fill(); 
+            });
+        },
         setSize(){
             window.onload = function(){
                 window.addEventListener('load', this.resizeCanvas());
@@ -264,6 +372,9 @@ export default {
         init() {
             var canvas = this.$refs.monCanvas
             var ctx = canvas.getContext("2d")
+
+            this.repereFill()
+            this.setStars()
 
             this.resizeCanvas(canvas)
 
@@ -281,6 +392,7 @@ export default {
             ctx.strokeStyle  = "white";
 
             this.draw(ctx)
+            this.initialize = false;
         }
     },
     mounted() {
@@ -296,7 +408,7 @@ export default {
 }
 
 #plateau{
-    background-color: grey;
+    background-color: "#0f056b";
     aspect-ratio: 1 / 1;
 }
 </style>
